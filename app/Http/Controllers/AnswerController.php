@@ -17,19 +17,21 @@ class AnswerController extends Controller
 
     public function answerStore(Request $request){
         $question_id = $request->question_id[0];
-        $survey_id = DB::table('questions')->where('id', $question_id)->first(); 
+        $survey_id = DB::table('questions')->where('id', $question_id)->first();
 
-        //var_dump($survey_id);exit;
         $answers = $request->answer;
-        
-        foreach ($answers as $ans){
-            $data['survey_id']      = $survey_id->survey_id;
-            $data['survey_unq_id']  = $survey_id->survey_unq_id;
-            $data['answer']         = $ans;
-            \DB::table('answers')->insert($data);
+
+        foreach ($answers as $key => $items){
+            $data['feedback_unq_id']  = "FEEDBACK-".date('dmyhs').rand(100,999);
+            $data['survey_id']        = $survey_id->survey_id;
+            $data['survey_unq_id']    = $survey_id->survey_unq_id;
+            $data['question_id']      = $request->question_id[$key];
+            $data['answer']           = $request->answer[$key];
+
+            DB::table('answers')->insert($data);
 
         }
 
-        
+
     }
 }
