@@ -34,5 +34,8 @@ user will redirect to the survey's question create page and he will post questio
 *He can watch the feedback by clicking on view feedbacks button.After going to the feedback page user will see the list of feedback
 ![Alt text](image-2.png)
 
+*After clicking on View Answers he'll see the feedback answers
+![Alt text](image-6.png)
+
 
  
