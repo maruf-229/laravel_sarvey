@@ -8,6 +8,7 @@
                 <h4>Survey Name : {{ $survey->name }}</h4>
                 <h4>Survey Description :</h4>
                 <p>{{ $survey->description }}</p>
+                <h5>Feedback Given: <b>{{ count($feedbacks) }}</b></h5>
                 <table class="table">
                     <thead>
                         <tr>
