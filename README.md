@@ -28,7 +28,8 @@ user will redirect to the survey's question create page and he will post questio
 
 ![Alt text](image-4.png)
 
-*After submitting the form the survey form owner will get a mail about a new feedback submission
+*After submitting the form the survey form owner will get a mail about a new feedback submission.
+*****Note: I've used gmail smtp
 ![Alt text](image-1.png)
 
 *He can watch the feedback by clicking on view feedbacks button.After going to the feedback page user will see the list of feedback
