@@ -30,13 +30,13 @@ Route::middleware(['auth:sanctum,admin', config('jetstream.auth_session'), 'veri
         return view('dashboard');
     })->name('dashboard')->middleware('auth:admin');
 });
- 
+
 
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        $surveys = DB::table('surveys')->orderBy('id','DESC')->get();
+        $surveys = DB::table('surveys')->where('user_id',Illuminate\Support\Facades\Auth::user()->id)->orderBy('id','DESC')->get();
         return view('dashboard',compact('surveys'));
     })->name('dashboard');
 });
@@ -47,10 +47,13 @@ Route::get('/user/logout' , [UserController::class, 'UserLogout'])->name('user.l
 Route::post('/user/store-survey' , [UserController::class, 'surveyStore'])->name('survey_store');
 
 Route::get('/user/create-form/{id}' , [UserController::class, 'create_form'])->name('question_create');
+Route::get('/user/view-feedback/{id}' , [UserController::class, 'show_feedback'])->name('show_feedback');
+Route::get('/user/view-answers/{id}' , [UserController::class, 'view_answers'])->name('view_answers');
 Route::post('/user/question-survey' , [UserController::class, 'questionStore'])->name('question_store');
 
 Route::get('/survey/form/{id}' , [AnswerController::class, 'showForm'])->name('show_form');
 Route::post('/survey/form-store' , [AnswerController::class, 'answerStore'])->name('answer_store');
 
+Route::get('/survey/submit' , [AnswerController::class, 'tank_you'])->name('tank_you');
 
- 
+

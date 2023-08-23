@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Answer;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MyMail;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
@@ -19,10 +22,12 @@ class AnswerController extends Controller
         $question_id = $request->question_id[0];
         $survey_id = DB::table('questions')->where('id', $question_id)->first();
 
+        $feedback_id  = "FEEDBACK-".date('dmyhs').rand(100,999);
+
         $answers = $request->answer;
 
         foreach ($answers as $key => $items){
-            $data['feedback_unq_id']  = "FEEDBACK-".date('dmyhs').rand(100,999);
+            $data['feedback_unq_id']  = $feedback_id;
             $data['survey_id']        = $survey_id->survey_id;
             $data['survey_unq_id']    = $survey_id->survey_unq_id;
             $data['question_id']      = $request->question_id[$key];
@@ -32,6 +37,21 @@ class AnswerController extends Controller
 
         }
 
+        $mailData = [
+            'title' => 'A new feedback has beed posted',
+            'body' => 'Go to your Survey to view the feedback'
+        ];
 
+        $survey_unq_id = DB::table('surveys')->where('unq_id',$survey_id->survey_unq_id)->first();
+        $user_id = $survey_unq_id->user_id;
+        $user = DB::table('users')->where('id',$user_id)->first();
+
+        Mail::to($user->email)->send(new MyMail($mailData));
+
+        return redirect()->route('tank_you');
+    }
+
+    public function tank_you(){
+        return view('user.thankyou');
     }
 }

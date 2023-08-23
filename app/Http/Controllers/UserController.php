@@ -28,13 +28,14 @@ class UserController extends Controller
 
         $data = [];
         $data['unq_id']         = "SURVEY-".date('dmyhs').rand(100,999);
+        $data['user_id']        = Auth::user()->id;
         $data['name']           = $request->name;
         $data['description']    = $request->description;
         $data['status']         = 1;
         $data['created_at']     = Carbon::now();
 
         DB::table('surveys')->insert($data);
-        
+
         return redirect()->back();
     }
 
@@ -60,5 +61,21 @@ class UserController extends Controller
         DB::table('questions')->insert($data);
 
         return redirect()->back();
+    }
+
+    public function show_feedback($id){
+        $survey = DB::table('surveys')->where('unq_id',$id)->first();
+        $feedbacks = DB::table('answers')->where('survey_unq_id',$id)->select('feedback_unq_id')->groupBy('feedback_unq_id')->get();
+
+        return view('user.feedbackList',compact('survey','feedbacks'));
+    }
+
+    public function view_answers($id){
+        $answers = DB::table('answers')
+                ->join('questions','answers.question_id','questions.id')
+                ->select('questions.question','answers.*')
+                ->where('answers.feedback_unq_id',$id)
+                ->get();
+        return view('user.feedbackAns',compact('answers'));
     }
 }

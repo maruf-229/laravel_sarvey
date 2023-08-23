@@ -20,9 +20,10 @@
                             <td>
                                 <a href="{{ route('question_create',$survey->id) }}" class="btn btn-info">Create Questions</a>
                                 <a href="{{ route('show_form',$survey->unq_id) }}" class="btn btn-dark">View Form</a>
+                                <a href="{{ route('show_feedback',$survey->unq_id) }}" class="btn btn-success">View Feedback</a>
                             </td>
                         </tr>
-                    @endforeach    
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -42,7 +43,7 @@
                         <label for="exampleInputEmail1" class="form-label">Survey Details</label>
                         <textarea class="form-control" name="description"></textarea>
                     </div>
-                    
+
                     <input type="submit" class="btn btn-primary mb-5" value="Insert">
                 </form>
             </div>
@@ -52,4 +53,3 @@
 
 @endsection
 
- 
