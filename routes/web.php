@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnswerController;
+use App\Models\Survey;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,7 +38,7 @@ Route::middleware(['auth:sanctum,admin', config('jetstream.auth_session'), 'veri
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        $surveys = DB::table('surveys')->where('user_id',Illuminate\Support\Facades\Auth::user()->id)->orderBy('id','DESC')->get();
+        $surveys = Survey::where('user_id',Illuminate\Support\Facades\Auth::user()->id)->latest()->get();
         return view('dashboard',compact('surveys'));
     })->name('dashboard');
 });

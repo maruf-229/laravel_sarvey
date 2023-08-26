@@ -5,20 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Answer extends Model
+class Question extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'feedback_unq_id',
         'survey_id',
         'survey_unq_id',
-        'question_id',
-        'answer',
-        'created_at',
+        'question',
     ];
-
-    public function question(){
-        return $this->belongsTo(Question::class,'question_id','id');
-    }
 }

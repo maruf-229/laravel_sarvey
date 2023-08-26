@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
+use App\Models\Question;
+use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,22 +29,21 @@ class UserController extends Controller
             'name.required' => 'Insert Survey Name',
         ]);
 
-        $data = [];
-        $data['unq_id']         = "SURVEY-".date('dmyhs').rand(100,999);
-        $data['user_id']        = Auth::user()->id;
-        $data['name']           = $request->name;
-        $data['description']    = $request->description;
-        $data['status']         = 1;
-        $data['created_at']     = Carbon::now();
-
-        DB::table('surveys')->insert($data);
+        Survey::insert([
+            'unq_id' => "SURVEY-".date('dmyhs').rand(100,999),
+            'user_id' => Auth::user()->id,
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => 1,
+            'created_at' => Carbon::now(),
+        ]);
 
         return redirect()->back();
     }
 
     public function create_form($id){
-        $survey = DB::table('surveys')->where('id',$id)->first();
-        $survey_ques = DB::table('questions')->where('survey_id',$id)->get();
+        $survey = Survey::findOrFail($id);
+        $survey_ques = Question::where('survey_id',$id)->get();
         return view('user.create_survey',compact('survey_ques','survey'));
     }
 
@@ -52,30 +54,25 @@ class UserController extends Controller
             'question.required' => 'Insert Question',
         ]);
 
-        $data = [];
-        $data['survey_id']      = $request->survey_id;
-        $data['survey_unq_id']  = $request->survey_unq_id;
-        $data['question']       = $request->question;
-        $data['created_at']     = Carbon::now();
-
-        DB::table('questions')->insert($data);
+        Question::insert([
+            'survey_id' => $request->survey_id,
+            'survey_unq_id' => $request->survey_unq_id,
+            'question' => $request->question,
+            'created_at' => Carbon::now()
+        ]);
 
         return redirect()->back();
     }
 
     public function show_feedback($id){
-        $survey = DB::table('surveys')->where('unq_id',$id)->first();
-        $feedbacks = DB::table('answers')->where('survey_unq_id',$id)->select('feedback_unq_id')->groupBy('feedback_unq_id')->get();
+        $survey = Survey::where('unq_id',$id)->first();
+        $feedbacks = Answer::where('survey_unq_id',$id)->select('feedback_unq_id')->groupBy('feedback_unq_id')->get();
 
         return view('user.feedbackList',compact('survey','feedbacks'));
     }
 
     public function view_answers($id){
-        $answers = DB::table('answers')
-                ->join('questions','answers.question_id','questions.id')
-                ->select('questions.question','answers.*')
-                ->where('answers.feedback_unq_id',$id)
-                ->get();
+        $answers = Answer::where('feedback_unq_id',$id)->get();
         return view('user.feedbackAns',compact('answers'));
     }
 }
