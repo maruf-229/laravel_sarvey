@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMailJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Answer;
@@ -37,16 +38,14 @@ class AnswerController extends Controller
             ]);
         }
 
-        $mailData = [
-            'title' => 'A new feedback has beed posted',
-            'body' => 'Go to your Survey to view the feedback'
-        ];
+
 
         $survey_unq_id = Survey::where('unq_id',$survey_id->survey_unq_id)->first();
         $user_id = $survey_unq_id->user_id;
         $user = User::where('id',$user_id)->first();
+        $userEmail = $user->email;
 
-        Mail::to($user->email)->send(new MyMail($mailData));
+        dispatch(new SendMailJob($userEmail));
 
         return redirect()->route('tank_you');
     }
